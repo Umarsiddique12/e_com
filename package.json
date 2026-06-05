@@ -6,6 +6,7 @@
 	"scripts": {
 		"dev": "nodemon backend/server.js",
 		"start": "node backend/server.js",
+		"seed-admin": "node backend/scripts/seedAdmin.js",
 		"build": "npm install && npm install --prefix frontend && npm run build --prefix frontend"
 	},
 	"keywords": [],
@@ -16,6 +17,7 @@
 		"bcryptjs": "^2.4.3",
 		"cloudinary": "^2.4.0",
 		"cookie-parser": "^1.4.6",
+		"cors": "^2.8.6",
 		"dotenv": "^16.4.5",
 		"express": "^4.19.2",
 		"ioredis": "^5.4.1",

@@ -12,11 +12,31 @@ export const getAllProducts = async (req, res) => {
 	}
 };
 
+export const getProductById = async (req, res) => {
+	try {
+		const product = await Product.findById(req.params.id);
+		if (!product) {
+			return res.status(404).json({ message: "Product not found" });
+		}
+		res.json(product);
+	} catch (error) {
+		console.log("Error in getProductById controller", error.message);
+		res.status(500).json({ message: "Server error", error: error.message });
+	}
+};
+
 export const getFeaturedProducts = async (req, res) => {
 	try {
-		let featuredProducts = await redis.get("featured_products");
-		if (featuredProducts) {
-			return res.json(JSON.parse(featuredProducts));
+		let featuredProducts = null;
+		
+		try {
+			// Try to get from Redis cache first
+			const cachedProducts = await redis.get("featured_products");
+			if (cachedProducts) {
+				return res.json(JSON.parse(cachedProducts));
+			}
+		} catch (redisError) {
+			console.log("Redis cache error, fetching from DB:", redisError.message);
 		}
 
 		// if not in redis, fetch from mongodb
@@ -24,13 +44,17 @@ export const getFeaturedProducts = async (req, res) => {
 		// which is good for performance
 		featuredProducts = await Product.find({ isFeatured: true }).lean();
 
-		if (!featuredProducts) {
+		if (!featuredProducts || featuredProducts.length === 0) {
 			return res.status(404).json({ message: "No featured products found" });
 		}
 
-		// store in redis for future quick access
-
-		await redis.set("featured_products", JSON.stringify(featuredProducts));
+		// store in redis for future quick access (non-blocking)
+		try {
+			await redis.set("featured_products", JSON.stringify(featuredProducts));
+		} catch (redisError) {
+			console.log("Failed to cache featured products in Redis:", redisError.message);
+			// Continue anyway - cache is not critical
+		}
 
 		res.json(featuredProducts);
 	} catch (error) {
@@ -148,8 +172,14 @@ async function updateFeaturedProductsCache() {
 		// The lean() method  is used to return plain JavaScript objects instead of full Mongoose documents. This can significantly improve performance
 
 		const featuredProducts = await Product.find({ isFeatured: true }).lean();
-		await redis.set("featured_products", JSON.stringify(featuredProducts));
+		try {
+			await redis.set("featured_products", JSON.stringify(featuredProducts));
+			console.log("Featured products cache updated successfully");
+		} catch (redisError) {
+			console.log("Warning: Failed to update Redis cache:", redisError.message);
+			// Don't throw - Redis cache failure is not critical
+		}
 	} catch (error) {
-		console.log("error in update cache function");
+		console.log("Error in updateFeaturedProductsCache function:", error.message);
 	}
 }

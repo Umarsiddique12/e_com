@@ -17,6 +17,7 @@ export const useUserStore = create((set, get) => ({
 
 		try {
 			const res = await axios.post("/auth/signup", { name, email, password });
+			console.log("Signup response:", res.data);
 			set({ user: res.data, loading: false });
 		} catch (error) {
 			set({ loading: false });
@@ -28,7 +29,7 @@ export const useUserStore = create((set, get) => ({
 
 		try {
 			const res = await axios.post("/auth/login", { email, password });
-
+			console.log("Login response:", res.data);
 			set({ user: res.data, loading: false });
 		} catch (error) {
 			set({ loading: false });
@@ -49,9 +50,10 @@ export const useUserStore = create((set, get) => ({
 		set({ checkingAuth: true });
 		try {
 			const response = await axios.get("/auth/profile");
+			console.log("CheckAuth response:", response.data);
 			set({ user: response.data, checkingAuth: false });
 		} catch (error) {
-			console.log(error.message);
+			console.log("CheckAuth error:", error.message);
 			set({ checkingAuth: false, user: null });
 		}
 	},
@@ -68,6 +70,36 @@ export const useUserStore = create((set, get) => ({
 		} catch (error) {
 			set({ user: null, checkingAuth: false });
 			throw error;
+		}
+	},
+
+	orders: [],
+	ordersLoading: false,
+
+	getProfileOrders: async () => {
+		set({ ordersLoading: true });
+		try {
+			const res = await axios.get("/auth/profile/orders");
+			set({ orders: res.data, ordersLoading: false });
+		} catch (error) {
+			set({ ordersLoading: false });
+			toast.error(error.response?.data?.message || "Failed to fetch orders");
+		}
+	},
+
+	updateProfile: async (data) => {
+		set({ loading: true });
+		try {
+			const res = await axios.put("/auth/profile", data);
+			// Merge existing user structure (role, etc.) or replace
+			const currentUser = get().user;
+			set({ user: { ...currentUser, ...res.data }, loading: false });
+			toast.success("Profile updated successfully");
+			return true;
+		} catch (error) {
+			set({ loading: false });
+			toast.error(error.response?.data?.message || "Failed to update profile");
+			return false;
 		}
 	},
 }));
