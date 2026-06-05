@@ -1,92 +1,219 @@
 import { Link } from "react-router-dom";
-import { Shield } from "lucide-react";
-import InfoPageLayout from "../components/InfoPageLayout";
+import { FileText, Scale, Clock, CreditCard, Truck, RefreshCw, Shield, AlertCircle } from "lucide-react";
+import { motion } from "framer-motion";
 
-const PrivacyPolicyPage = () => {
+const TermsPage = () => {
 	return (
-		<InfoPageLayout
-			title='Privacy Policy'
-			subtitle="Your privacy matters. Here's how we collect, use, and protect your data."
-			icon={Shield}
-			lastUpdated='June 1, 2026'
-		>
-			<h2>Information We Collect</h2>
-			<p>We collect information you provide directly and data collected automatically when you use StyleHub:</p>
-			<ul>
-				<li><strong>Account data:</strong> name, email address, password (encrypted), and profile preferences</li>
-				<li><strong>Order data:</strong> shipping address, billing information, purchase history</li>
-				<li><strong>Communication data:</strong> messages sent to customer support</li>
-				<li><strong>Usage data:</strong> pages visited, products viewed, device type, browser, IP address</li>
-				<li><strong>Cookies:</strong> session cookies and analytics cookies to improve your experience</li>
-			</ul>
+		<div className='min-h-screen bg-gray-50'>
+			{/* Hero Section with Background Image */}
+			<div className='relative h-[300px] bg-cover bg-center bg-fixed' style={{
+				backgroundImage: 'url("https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=2070")'
+			}}>
+				<div className='absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/70' />
+				<div className='absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-gray-50' />
+				
+				<div className='relative h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center'>
+					<motion.div
+						initial={{ opacity: 0, y: 20 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ duration: 0.6 }}
+						className='max-w-2xl'
+					>
+						<div className='flex items-center gap-2 text-white/80 text-sm mb-4'>
+							<span>Legal</span>
+							<span>→</span>
+							<span className='text-white'>Terms & Conditions</span>
+						</div>
+						<h1 className='text-4xl md:text-5xl font-bold text-white mb-4 tracking-tight'>
+							Terms & Conditions
+						</h1>
+						<p className='text-white/80 text-lg'>
+							Please read these terms carefully before using our services.
+						</p>
+					</motion.div>
+				</div>
+			</div>
 
-			<h2>How We Use Your Information</h2>
-			<p>We use your information to:</p>
-			<ul>
-				<li>Process and fulfill your orders</li>
-				<li>Manage your account and provide customer support</li>
-				<li>Send order confirmations, shipping updates, and promotional emails (with your consent)</li>
-				<li>Improve our website, products, and services</li>
-				<li>Detect and prevent fraud and unauthorized activity</li>
-				<li>Comply with legal obligations</li>
-			</ul>
+			{/* Main Content */}
+			<div className='max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 -mt-10 relative z-10 pb-16'>
+				<motion.div
+					initial={{ opacity: 0, y: 20 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ duration: 0.6, delay: 0.2 }}
+					className='bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden'
+				>
+					<div className='absolute top-0 left-0 w-full h-1 bg-gray-900' />
+					
+					<div className='p-8 sm:p-10'>
+						{/* Last Updated Badge */}
+						<div className='flex items-center justify-between mb-8 pb-4 border-b border-gray-100'>
+							<div className='flex items-center gap-2'>
+								<FileText size={20} className='text-gray-400' />
+								<span className='text-sm text-gray-500'>Effective: June 1, 2026</span>
+							</div>
+							<Link to='/contact' className='text-sm text-gray-900 hover:text-gray-600 transition font-medium'>
+								Questions? Contact us →
+							</Link>
+						</div>
 
-			<h2>Information Sharing</h2>
-			<p>We do not sell your personal information. We may share data with:</p>
-			<ul>
-				<li><strong>Service providers:</strong> payment processors, shipping carriers, and email services</li>
-				<li><strong>Legal requirements:</strong> when required by law or to protect our rights</li>
-				<li><strong>Business transfers:</strong> in connection with a merger, acquisition, or sale of assets</li>
-			</ul>
+						<div className='space-y-8'>
+							{/* Section 1 */}
+							<section>
+								<div className='flex items-center gap-3 mb-4'>
+									<div className='w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center'>
+										<FileText size={18} className='text-gray-700' />
+									</div>
+									<h2 className='text-xl font-bold text-gray-900'>Agreement to Terms</h2>
+								</div>
+								<p className='text-gray-600 leading-relaxed'>
+									By accessing or using StyleHub, you agree to be bound by these Terms & Conditions. 
+									If you disagree with any part of these terms, you may not access our services.
+								</p>
+							</section>
 
-			<h2>Data Security</h2>
-			<p>
-				We implement industry-standard security measures including SSL encryption, secure payment
-				processing, and access controls. While we take reasonable precautions, no method of
-				transmission over the internet is 100% secure.
-			</p>
+							{/* Section 2 */}
+							<section>
+								<div className='flex items-center gap-3 mb-4'>
+									<div className='w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center'>
+										<ShoppingBag size={18} className='text-gray-700' />
+									</div>
+									<h2 className='text-xl font-bold text-gray-900'>Orders & Purchases</h2>
+								</div>
+								<ul className='space-y-2 text-gray-600 ml-6'>
+									<li className='list-disc'>All orders are subject to product availability</li>
+									<li className='list-disc'>Prices are subject to change without notice</li>
+									<li className='list-disc'>We reserve the right to refuse or cancel any order</li>
+									<li className='list-disc'>In case of pricing errors, we will notify you before processing</li>
+								</ul>
+							</section>
 
-			<h2>Your Rights</h2>
-			<p>Depending on your location, you may have the right to:</p>
-			<ul>
-				<li>Access the personal data we hold about you</li>
-				<li>Request correction of inaccurate data</li>
-				<li>Request deletion of your data</li>
-				<li>Opt out of marketing communications</li>
-				<li>Request data portability</li>
-			</ul>
-			<p>
-				To exercise these rights, contact us at{" "}
-				<a href='mailto:privacy@stylehub.com'>privacy@stylehub.com</a> or through your{" "}
-				<Link to='/profile'>account settings</Link>.
-			</p>
+							{/* Section 3 */}
+							<section>
+								<div className='flex items-center gap-3 mb-4'>
+									<div className='w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center'>
+										<CreditCard size={18} className='text-gray-700' />
+									</div>
+									<h2 className='text-xl font-bold text-gray-900'>Payments</h2>
+								</div>
+								<ul className='space-y-2 text-gray-600 ml-6'>
+									<li className='list-disc'>We accept major credit cards and digital payments</li>
+									<li className='list-disc'>All payments are processed through secure gateways</li>
+									<li className='list-disc'>You agree to provide accurate payment information</li>
+									<li className='list-disc'>Sales tax may apply based on your location</li>
+								</ul>
+							</section>
 
-			<h2>Cookies</h2>
-			<p>
-				We use cookies to remember your preferences, keep you logged in, and analyze site traffic.
-				You can control cookies through your browser settings. Disabling cookies may affect site functionality.
-			</p>
+							{/* Section 4 */}
+							<section>
+								<div className='flex items-center gap-3 mb-4'>
+									<div className='w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center'>
+										<Truck size={18} className='text-gray-700' />
+									</div>
+									<h2 className='text-xl font-bold text-gray-900'>Shipping & Delivery</h2>
+								</div>
+								<ul className='space-y-2 text-gray-600 ml-6'>
+									<li className='list-disc'>Delivery estimates are provided but not guaranteed</li>
+									<li className='list-disc'>Risk of loss passes to you upon delivery</li>
+									<li className='list-disc'>International shipping may incur customs duties</li>
+									<li className='list-disc'>We are not responsible for carrier delays</li>
+								</ul>
+							</section>
 
-			<h2>Children's Privacy</h2>
-			<p>
-				StyleHub is not intended for users under 18. We do not knowingly collect personal information
-				from children. If you believe we have collected data from a minor, please contact us immediately.
-			</p>
+							{/* Section 5 */}
+							<section>
+								<div className='flex items-center gap-3 mb-4'>
+									<div className='w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center'>
+										<RefreshCw size={18} className='text-gray-700' />
+									</div>
+									<h2 className='text-xl font-bold text-gray-900'>Returns & Refunds</h2>
+								</div>
+								<ul className='space-y-2 text-gray-600 ml-6'>
+									<li className='list-disc'>30-day return window for eligible items</li>
+									<li className='list-disc'>Items must be unworn with original tags</li>
+									<li className='list-disc'>Refunds processed within 5-7 business days</li>
+									<li className='list-disc'>Return shipping is complimentary for orders over $50</li>
+								</ul>
+							</section>
 
-			<h2>Changes to This Policy</h2>
-			<p>
-				We may update this Privacy Policy periodically. We will notify you of significant changes
-				via email or a prominent notice on our website.
-			</p>
+							{/* Section 6 */}
+							<section>
+								<div className='flex items-center gap-3 mb-4'>
+									<div className='w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center'>
+										<Shield size={18} className='text-gray-700' />
+									</div>
+									<h2 className='text-xl font-bold text-gray-900'>Intellectual Property</h2>
+								</div>
+								<p className='text-gray-600 leading-relaxed'>
+									All content on StyleHub, including images, logos, text, and designs, 
+									is our intellectual property and may not be used without permission.
+								</p>
+							</section>
 
-			<h2>Contact Us</h2>
-			<p>
-				Privacy questions? Email{" "}
-				<a href='mailto:privacy@stylehub.com'>privacy@stylehub.com</a> or visit our{" "}
-				<Link to='/contact'>Contact page</Link>.
-			</p>
-		</InfoPageLayout>
+							{/* Section 7 */}
+							<section>
+								<div className='flex items-center gap-3 mb-4'>
+									<div className='w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center'>
+										<Scale size={18} className='text-gray-700' />
+									</div>
+									<h2 className='text-xl font-bold text-gray-900'>Account Responsibility</h2>
+								</div>
+								<ul className='space-y-2 text-gray-600 ml-6'>
+									<li className='list-disc'>You are responsible for maintaining account security</li>
+									<li className='list-disc'>Notify us immediately of unauthorized access</li>
+									<li className='list-disc'>We reserve the right to suspend accounts for violations</li>
+									<li className='list-disc'>You must be 18+ to create an account</li>
+								</ul>
+							</section>
+
+							{/* Section 8 */}
+							<section>
+								<div className='flex items-center gap-3 mb-4'>
+									<div className='w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center'>
+										<AlertCircle size={18} className='text-gray-700' />
+									</div>
+									<h2 className='text-xl font-bold text-gray-900'>Limitation of Liability</h2>
+								</div>
+								<p className='text-gray-600 leading-relaxed'>
+									To the maximum extent permitted by law, StyleHub shall not be liable for any indirect, 
+									incidental, or consequential damages arising from your use of our services.
+								</p>
+							</section>
+
+							{/* Section 9 */}
+							<section>
+								<div className='flex items-center gap-3 mb-4'>
+									<div className='w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center'>
+										<Clock size={18} className='text-gray-700' />
+									</div>
+									<h2 className='text-xl font-bold text-gray-900'>Changes to Terms</h2>
+								</div>
+								<p className='text-gray-600 leading-relaxed'>
+									We may update these Terms & Conditions at any time. Continued use of StyleHub 
+									constitutes acceptance of the revised terms.
+								</p>
+							</section>
+
+							{/* Section 10 */}
+							<section className='pt-4 border-t border-gray-100'>
+								<h2 className='text-xl font-bold text-gray-900 mb-4'>Governing Law</h2>
+								<p className='text-gray-600 leading-relaxed'>
+									These terms are governed by the laws of the United States and the State of New York, 
+									without regard to conflict of law principles.
+								</p>
+							</section>
+						</div>
+
+						{/* Footer Note */}
+						<div className='mt-8 pt-6 border-t border-gray-100 text-center'>
+							<p className='text-xs text-gray-400'>
+								By using StyleHub, you acknowledge that you have read, understood, and agree to these Terms & Conditions.
+							</p>
+						</div>
+					</div>
+				</motion.div>
+			</div>
+		</div>
 	);
 };
 
-export default PrivacyPolicyPage;
+export default TermsPage;

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, ShoppingCart, Sparkles, Shield, Truck, Check, Crown, Zap } from "lucide-react";
+import { ArrowLeft, ShoppingCart, Shield, Truck, Check, Crown, Star, Heart, Share2, Ruler, RefreshCw, Award } from "lucide-react";
 import { useProductStore } from "../stores/useProductStore";
 import { useCartStore } from "../stores/useCartStore";
 import { useUserStore } from "../stores/useUserStore";
@@ -15,6 +15,8 @@ const ProductDetailPage = () => {
 	const { addToCart } = useCartStore();
 	const { user } = useUserStore();
 	const [loadingCheckout, setLoadingCheckout] = useState(false);
+	const [selectedImage, setSelectedImage] = useState(0);
+	const [quantity, setQuantity] = useState(1);
 
 	useEffect(() => {
 		fetchProductById(id);
@@ -26,7 +28,7 @@ const ProductDetailPage = () => {
 			return;
 		}
 
-		addToCart(productDetail);
+		addToCart({ ...productDetail, quantity });
 		toast.success("Product added to cart!");
 	};
 
@@ -39,9 +41,8 @@ const ProductDetailPage = () => {
 		setLoadingCheckout(true);
 		try {
 			const response = await axios.post("/payments/create-checkout-session", {
-				products: [{ ...productDetail, quantity: 1 }],
+				products: [{ ...productDetail, quantity }],
 			});
-
 			window.location.href = response.data.session.url;
 		} catch (error) {
 			toast.error(error.response?.data?.error || "Failed to start checkout");
@@ -54,15 +55,18 @@ const ProductDetailPage = () => {
 
 	if (!productDetail) {
 		return (
-			<div className='min-h-screen flex items-center justify-center px-4 py-20'>
+			<div className='min-h-screen bg-gray-50 flex items-center justify-center px-4 py-20'>
 				<motion.div
 					initial={{ opacity: 0, scale: 0.9 }}
 					animate={{ opacity: 1, scale: 1 }}
-					className='bg-white border border-slate-200 rounded-3xl shadow-lg p-10 text-center max-w-lg'
+					className='bg-white rounded-2xl shadow-xl p-10 text-center max-w-lg border border-gray-100'
 				>
-					<h2 className='text-3xl font-bold text-slate-800 mb-4'>Product not found</h2>
-					<p className='text-slate-500 mb-6'>The item you are looking for may have been removed or does not exist.</p>
-					<Link to='/' className='inline-flex items-center justify-center rounded-full bg-emerald-600 px-6 py-3 text-white font-semibold shadow-lg shadow-emerald-600/20 hover:bg-emerald-500 transition'>
+					<div className='w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4'>
+						<Crown size={32} className='text-gray-400' />
+					</div>
+					<h2 className='text-2xl font-bold text-gray-900 mb-4'>Product not found</h2>
+					<p className='text-gray-500 mb-6'>The item you are looking for may have been removed or does not exist.</p>
+					<Link to='/' className='inline-flex items-center justify-center bg-gray-900 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-800 transition'>
 						Back to shop
 					</Link>
 				</motion.div>
@@ -71,175 +75,170 @@ const ProductDetailPage = () => {
 	}
 
 	return (
-		<div className='min-h-screen bg-slate-50'>
-			<div className='relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16'>
+		<div className='min-h-screen bg-gray-50'>
+			{/* Hero Section with Background Image */}
+			<div className='relative h-[300px] bg-cover bg-center bg-fixed' style={{
+				backgroundImage: 'url("https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=2070")'
+			}}>
+				<div className='absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/70' />
+				<div className='absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-gray-50' />
+				
+				<div className='relative h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center'>
+					<motion.div
+						initial={{ opacity: 0, y: 20 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ duration: 0.6 }}
+						className='max-w-2xl'
+					>
+						<div className='flex items-center gap-2 text-white/80 text-sm mb-4'>
+							<span>Shop</span>
+							<span>→</span>
+							<span className='text-white'>Product Details</span>
+						</div>
+						<h1 className='text-4xl md:text-5xl font-bold text-white mb-4 tracking-tight'>
+							Product Details
+						</h1>
+						<p className='text-white/80 text-lg'>
+							Discover the craftsmanship and quality of our luxury collection.
+						</p>
+					</motion.div>
+				</div>
+			</div>
+
+			{/* Main Content */}
+			<div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-10 relative z-10 pb-16'>
 				{/* Back Button */}
 				<motion.div
 					initial={{ opacity: 0, x: -20 }}
 					animate={{ opacity: 1, x: 0 }}
 					transition={{ duration: 0.5 }}
+					className='mb-6'
 				>
-					<Link to='/' className='inline-flex items-center gap-2 text-slate-600 hover:text-emerald-600 mb-10 font-medium transition-colors'>
-						<ArrowLeft className='w-5 h-5' />
+					<Link to='/' className='inline-flex items-center gap-2 text-gray-500 hover:text-gray-900 transition font-medium'>
+						<ArrowLeft className='w-4 h-4' />
 						Back to shop
 					</Link>
 				</motion.div>
 
-				<div className='grid gap-12 lg:grid-cols-[1.1fr_0.9fr] items-start'>
+				<div className='grid gap-8 lg:grid-cols-2'>
 					{/* Product Image Section */}
 					<motion.div
-						initial={{ opacity: 0, x: -60 }}
+						initial={{ opacity: 0, x: -30 }}
 						animate={{ opacity: 1, x: 0 }}
-						transition={{ duration: 0.7, ease: "easeOut" }}
-						className='group'
+						transition={{ duration: 0.6 }}
+						className='space-y-4'
 					>
-						<div className='relative rounded-[2.5rem] overflow-hidden shadow-2xl hover:shadow-3xl transition-shadow duration-500 bg-white border border-slate-200/80 group-hover:border-emerald-300/60'>
-							{/* Top accent bar */}
-							<div className='absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-400 z-10' />
-							
-							{/* Image container with zoom effect */}
-							<div className='relative overflow-hidden bg-gradient-to-br from-slate-50 to-slate-100 aspect-square'>
-								<motion.img
+						<div className='relative bg-white rounded-2xl overflow-hidden border border-gray-200 shadow-lg'>
+							<div className='absolute top-0 left-0 w-full h-1 bg-gray-900' />
+							<div className='relative aspect-square bg-gray-100'>
+								<img
 									src={productDetail.image}
 									alt={productDetail.name}
-									className='w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out'
-									initial={{ scale: 1 }}
-									animate={{ scale: 1 }}
+									className='w-full h-full object-cover'
 								/>
-								{/* Overlay gradient on hover */}
-								<div className='absolute inset-0 bg-gradient-to-t from-slate-900/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500' />
-							</div>
-
-							{/* Badge */}
-							<motion.div
-								initial={{ opacity: 0, y: -10 }}
-								animate={{ opacity: 1, y: 0 }}
-								transition={{ delay: 0.3, duration: 0.5 }}
-								className='absolute top-6 right-6 z-20'
-							>
-								<div className='rounded-full bg-emerald-600/95 backdrop-blur text-white px-4 py-2 text-sm font-bold shadow-lg flex items-center gap-2'>
-									<Crown size={16} />
+								<div className='absolute top-4 right-4 flex gap-2'>
+									<button className='w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-md hover:bg-gray-50 transition'>
+										<Heart size={18} className='text-gray-600' />
+									</button>
+									<button className='w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-md hover:bg-gray-50 transition'>
+										<Share2 size={18} className='text-gray-600' />
+									</button>
+								</div>
+								<div className='absolute bottom-4 left-4 bg-gray-900 text-white px-3 py-1 rounded-lg text-xs font-medium flex items-center gap-1'>
+									<Crown size={12} />
 									Premium
 								</div>
-							</motion.div>
+							</div>
 						</div>
 					</motion.div>
 
 					{/* Product Details Section */}
 					<motion.div
-						initial={{ opacity: 0, y: 40 }}
+						initial={{ opacity: 0, y: 30 }}
 						animate={{ opacity: 1, y: 0 }}
-						transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
+						transition={{ duration: 0.6, delay: 0.2 }}
 						className='space-y-6'
 					>
-						{/* Category & Title */}
-						<motion.div
-							initial={{ opacity: 0 }}
-							animate={{ opacity: 1 }}
-							transition={{ delay: 0.3, duration: 0.5 }}
-							className='rounded-2xl border border-slate-200 bg-white p-8 shadow-sm hover:shadow-md transition-shadow duration-300'
-						>
+						{/* Title & Price */}
+						<div className='bg-white rounded-2xl border border-gray-200 p-6 shadow-sm'>
 							<div className='flex items-center gap-2 mb-3'>
-								<Sparkles size={16} className='text-emerald-600' />
-								<p className='text-sm font-bold uppercase tracking-[0.12em] text-emerald-600'>
-									{productDetail.category || "Collection"}
-								</p>
+								<span className='text-xs font-medium text-gray-500 uppercase tracking-wider'>
+									{productDetail.category || "Luxury Collection"}
+								</span>
+								<div className='flex items-center gap-1'>
+									<Star size={14} className='fill-yellow-400 text-yellow-400' />
+									<span className='text-sm font-medium text-gray-700'>4.9</span>
+									<span className='text-xs text-gray-400'>(128 reviews)</span>
+								</div>
 							</div>
-							<h1 className='text-5xl font-extrabold tracking-tight text-slate-900 mb-4 leading-tight'>
+							<h1 className='text-3xl font-bold text-gray-900 mb-3'>
 								{productDetail.name}
 							</h1>
-							<p className='text-lg text-slate-600 leading-relaxed mb-6'>
+							<p className='text-gray-600 leading-relaxed mb-4'>
 								{productDetail.description || "Premium style with bold details and a perfect fit for every occasion."}
 							</p>
-							
-							{/* Price Display */}
-							<motion.div
-								whileHover={{ scale: 1.05 }}
-								className='inline-block rounded-2xl bg-gradient-to-br from-emerald-50 to-teal-50 px-6 py-4 border border-emerald-200/60'
-							>
-								<p className='text-xs uppercase tracking-widest text-emerald-700 font-bold mb-1'>Price</p>
-								<p className='text-5xl font-extrabold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent'>
+							<div className='flex items-baseline gap-2'>
+								<span className='text-3xl font-bold text-gray-900'>
 									${productDetail.price.toFixed(2)}
-								</p>
-							</motion.div>
-						</motion.div>
+								</span>
+								{productDetail.oldPrice && (
+									<span className='text-gray-400 line-through text-sm'>
+										${productDetail.oldPrice.toFixed(2)}
+									</span>
+								)}
+							</div>
+						</div>
+
+						{/* Quantity Selector */}
+						<div className='bg-white rounded-2xl border border-gray-200 p-6 shadow-sm'>
+							<h3 className='font-semibold text-gray-900 mb-3'>Quantity</h3>
+							<div className='flex items-center gap-3'>
+								<button
+									onClick={() => setQuantity(Math.max(1, quantity - 1))}
+									className='w-10 h-10 border border-gray-200 rounded-lg flex items-center justify-center hover:border-gray-400 transition'
+								>
+									-
+								</button>
+								<span className='w-12 text-center font-medium text-gray-900'>{quantity}</span>
+								<button
+									onClick={() => setQuantity(quantity + 1)}
+									className='w-10 h-10 border border-gray-200 rounded-lg flex items-center justify-center hover:border-gray-400 transition'
+								>
+									+
+								</button>
+							</div>
+						</div>
 
 						{/* Features Grid */}
-						<div className='grid gap-3 sm:grid-cols-3'>
+						<div className='grid grid-cols-2 gap-3'>
 							{[
-								{ icon: Sparkles, label: "Premium Materials", desc: "Luxurious fabrics" },
-								{ icon: Truck, label: "Fast Shipping", desc: "Quick delivery" },
-								{ icon: Shield, label: "Easy Returns", desc: "30-day guarantee" },
+								{ icon: Award, label: "Premium Quality", desc: "Luxury materials" },
+								{ icon: Truck, label: "Fast Shipping", desc: "Express delivery" },
+								{ icon: Shield, label: "Secure Payment", desc: "256-bit SSL" },
+								{ icon: RefreshCw, label: "Easy Returns", desc: "30-day guarantee" },
 							].map((feature, i) => (
 								<motion.div
 									key={i}
 									initial={{ opacity: 0, y: 20 }}
 									animate={{ opacity: 1, y: 0 }}
-									transition={{ delay: 0.4 + i * 0.1, duration: 0.5 }}
-									className='rounded-2xl bg-white border border-slate-200 p-4 shadow-sm hover:shadow-md hover:border-emerald-300/50 transition-all duration-300'
+									transition={{ delay: 0.4 + i * 0.1 }}
+									className='bg-white rounded-xl border border-gray-200 p-3 shadow-sm'
 								>
-									<div className='flex items-center gap-3 mb-2'>
-										<feature.icon size={18} className='text-emerald-600' />
-										<h3 className='font-bold text-slate-800 text-sm'>{feature.label}</h3>
+									<div className='flex items-center gap-2 mb-1'>
+										<feature.icon size={14} className='text-gray-700' />
+										<span className='font-medium text-gray-800 text-xs'>{feature.label}</span>
 									</div>
-									<p className='text-xs text-slate-500'>{feature.desc}</p>
+									<p className='text-xs text-gray-500'>{feature.desc}</p>
 								</motion.div>
 							))}
 						</div>
 
-						{/* Product Details & Highlights */}
-						<motion.div
-							initial={{ opacity: 0, y: 20 }}
-							animate={{ opacity: 1, y: 0 }}
-							transition={{ delay: 0.5, duration: 0.5 }}
-							className='rounded-2xl border border-slate-200 bg-white p-8 shadow-sm'
-						>
-							<div className='flex items-center justify-between mb-6'>
-								<h3 className='text-lg font-bold text-slate-800 uppercase tracking-wide'>Highlights</h3>
-								<div className='rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-700 flex items-center gap-2'>
-									<Zap size={14} />
-									Best Seller
-								</div>
-							</div>
-							<ul className='space-y-4'>
-								{[
-									"Premium materials with a modern silhouette",
-									"Perfect for day-to-night styling",
-									"Handpicked to elevate your wardrobe instantly",
-									"Eco-friendly and sustainably sourced",
-								].map((item, i) => (
-									<motion.li
-										key={i}
-										initial={{ opacity: 0, x: -20 }}
-										animate={{ opacity: 1, x: 0 }}
-										transition={{ delay: 0.6 + i * 0.1, duration: 0.5 }}
-										className='flex items-start gap-4'
-									>
-										<motion.span
-											initial={{ scale: 0 }}
-											animate={{ scale: 1 }}
-											transition={{ delay: 0.7 + i * 0.1, duration: 0.4 }}
-											className='mt-1 h-3 w-3 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 flex-shrink-0 shadow-sm'
-										/>
-										<span className='text-slate-600 leading-relaxed font-medium'>{item}</span>
-									</motion.li>
-								))}
-							</ul>
-						</motion.div>
-
 						{/* Action Buttons */}
-						<motion.div
-							initial={{ opacity: 0, y: 30 }}
-							animate={{ opacity: 1, y: 0 }}
-							transition={{ delay: 0.7, duration: 0.5 }}
-							className='space-y-4'
-						>
-							<motion.button
-								whileHover={{ scale: 1.02 }}
-								whileTap={{ scale: 0.98 }}
+						<div className='space-y-3'>
+							<button
 								onClick={handleBuyNow}
 								disabled={loadingCheckout}
-								className='w-full rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 px-8 py-4 text-white text-lg font-bold shadow-lg shadow-emerald-600/30 hover:from-emerald-500 hover:to-teal-500 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 group border border-emerald-500/50'
+								className='w-full bg-gray-900 hover:bg-gray-800 text-white py-3.5 rounded-lg font-semibold transition flex items-center justify-center gap-2 disabled:opacity-50'
 							>
 								{loadingCheckout ? (
 									<>
@@ -247,40 +246,59 @@ const ProductDetailPage = () => {
 										Processing...
 									</>
 								) : (
-									<>
-										<Zap size={20} className='group-hover:scale-110 transition-transform' />
-										Buy Now
-									</>
+									<>Buy Now</>
 								)}
-							</motion.button>
+							</button>
 
-							<motion.button
-								whileHover={{ scale: 1.02 }}
-								whileTap={{ scale: 0.98 }}
+							<button
 								onClick={handleAddToCart}
-								className='w-full rounded-2xl border-2 border-emerald-600 bg-white px-8 py-4 text-emerald-600 text-lg font-bold hover:bg-emerald-50 transition-all duration-300 flex items-center justify-center gap-3 group shadow-sm'
+								className='w-full border-2 border-gray-900 text-gray-900 hover:bg-gray-50 py-3.5 rounded-lg font-semibold transition flex items-center justify-center gap-2'
 							>
-								<ShoppingCart size={20} className='group-hover:translate-y-1 transition-transform' />
+								<ShoppingCart size={18} />
 								Add to Cart
-							</motion.button>
-						</motion.div>
+							</button>
+						</div>
+
+						{/* Product Details Accordion */}
+						<div className='bg-white rounded-2xl border border-gray-200 divide-y divide-gray-100 shadow-sm'>
+							<div className='p-5'>
+								<div className='flex items-center gap-2 mb-3'>
+									<Ruler size={16} className='text-gray-700' />
+									<h3 className='font-semibold text-gray-900'>Size & Fit</h3>
+								</div>
+								<p className='text-sm text-gray-600'>Model is 6'1" wearing size M. Regular fit, true to size.</p>
+							</div>
+							<div className='p-5'>
+								<div className='flex items-center gap-2 mb-3'>
+									<Shield size={16} className='text-gray-700' />
+									<h3 className='font-semibold text-gray-900'>Materials & Care</h3>
+								</div>
+								<p className='text-sm text-gray-600'>100% premium cotton. Machine wash cold, tumble dry low.</p>
+							</div>
+							<div className='p-5'>
+								<div className='flex items-center gap-2 mb-3'>
+									<Truck size={16} className='text-gray-700' />
+									<h3 className='font-semibold text-gray-900'>Shipping & Returns</h3>
+								</div>
+								<p className='text-sm text-gray-600'>Free express shipping on orders $50+. 30-day easy returns.</p>
+							</div>
+						</div>
 
 						{/* Trust Badges */}
-						<motion.div
-							initial={{ opacity: 0 }}
-							animate={{ opacity: 1 }}
-							transition={{ delay: 0.8, duration: 0.5 }}
-							className='pt-4 border-t border-slate-200 flex items-center justify-center gap-6 text-sm text-slate-500'
-						>
-							<div className='flex items-center gap-2'>
-								<Check size={16} className='text-emerald-600' />
+						<div className='flex items-center justify-center gap-4 text-xs text-gray-500'>
+							<div className='flex items-center gap-1'>
+								<Check size={14} className='text-green-600' />
 								<span>100% Authentic</span>
 							</div>
-							<div className='flex items-center gap-2'>
-								<Shield size={16} className='text-emerald-600' />
-								<span>Secure Payment</span>
+							<div className='flex items-center gap-1'>
+								<Shield size={14} className='text-green-600' />
+								<span>Secure Checkout</span>
 							</div>
-						</motion.div>
+							<div className='flex items-center gap-1'>
+								<Award size={14} className='text-green-600' />
+								<span>Luxury Quality</span>
+							</div>
+						</div>
 					</motion.div>
 				</div>
 			</div>
