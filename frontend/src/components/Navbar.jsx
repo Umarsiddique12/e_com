@@ -1,17 +1,18 @@
-import { useState } from "react";
-import { ShoppingCart, UserPlus, LogIn, LogOut, Lock, Zap, User, ChevronDown, Menu, X } from "lucide-react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { ShoppingCart, UserPlus, LogIn, LogOut, Lock, Zap, User, ChevronDown, Menu, X, Crown, Sparkles, Heart, Search } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import { useUserStore } from "../stores/useUserStore";
 import { useCartStore } from "../stores/useCartStore";
 
 const shopCategories = [
-	{ to: "/jeans", label: "Jeans" },
-	{ to: "/t-shirts", label: "T-Shirts" },
-	{ to: "/shoes", label: "Shoes" },
-	{ to: "/glasses", label: "Glasses" },
-	{ to: "/jackets", label: "Jackets" },
-	{ to: "/suits", label: "Suits" },
-	{ to: "/bags", label: "Bags" },
+	{ to: "/jeans", label: "Jeans", icon: "👖" },
+	{ to: "/t-shirts", label: "T-Shirts", icon: "👕" },
+	{ to: "/shoes", label: "Shoes", icon: "👟" },
+	{ to: "/glasses", label: "Glasses", icon: "👓" },
+	{ to: "/jackets", label: "Jackets", icon: "🧥" },
+	{ to: "/suits", label: "Suits", icon: "👔" },
+	{ to: "/bags", label: "Bags", icon: "👜" },
 ];
 
 const Navbar = () => {
@@ -20,154 +21,264 @@ const Navbar = () => {
 	const { cart } = useCartStore();
 	const [shopOpen, setShopOpen] = useState(false);
 	const [mobileOpen, setMobileOpen] = useState(false);
+	const [scrolled, setScrolled] = useState(false);
+	const location = useLocation();
+
+	useEffect(() => {
+		const handleScroll = () => {
+			setScrolled(window.scrollY > 20);
+		};
+		window.addEventListener("scroll", handleScroll);
+		return () => window.removeEventListener("scroll", handleScroll);
+	}, []);
+
+	// Close mobile menu on route change
+	useEffect(() => {
+		setMobileOpen(false);
+	}, [location]);
+
+	const cartItemCount = cart?.length || 0;
 
 	return (
-		<header className='fixed top-0 left-0 w-full bg-white bg-opacity-80 backdrop-blur-md shadow-sm z-40 transition-all duration-300 border-b border-slate-200/60'>
-			<div className='container mx-auto px-4 py-3'>
-				<div className='flex justify-between items-center'>
-					<Link to='/' className='text-2xl font-bold text-emerald-600 items-center space-x-2 flex hover:text-emerald-500 transition duration-300'>
-						<Zap size={24} className='fill-emerald-100' />
-						<span>StyleHub</span>
-					</Link>
+		<>
+			{/* Top Bar */}
+			<div className='hidden md:block bg-gray-900 text-white text-xs py-2'>
+				<div className='container mx-auto px-4 flex justify-between items-center'>
+					<div className='flex items-center gap-4'>
+						<span className='flex items-center gap-1'>
+							<Sparkles size={12} />
+							Free shipping on orders $50+
+						</span>
+						<span className='flex items-center gap-1'>
+							<Crown size={12} />
+							Luxury concierge 24/7
+						</span>
+					</div>
+					<div className='flex items-center gap-4'>
+						<Link to='/contact' className='hover:text-gray-300 transition'>Support</Link>
+						<Link to='/returns' className='hover:text-gray-300 transition'>Returns</Link>
+						<Link to='/faq' className='hover:text-gray-300 transition'>FAQ</Link>
+					</div>
+				</div>
+			</div>
 
-					<nav className='hidden lg:flex items-center gap-5'>
-						<Link to='/' className='text-slate-600 hover:text-emerald-600 font-medium transition'>
-							Home
+			{/* Main Navbar */}
+			<header className={`fixed top-0 left-0 w-full bg-white z-40 transition-all duration-300 ${
+				scrolled ? 'shadow-lg border-b border-gray-100' : 'shadow-sm border-b border-gray-100/50'
+			}`}>
+				<div className='container mx-auto px-4 py-3 md:py-4'>
+					<div className='flex justify-between items-center'>
+						{/* Logo */}
+						<Link to='/' className='flex items-center gap-2 group'>
+							<div className='w-8 h-8 bg-gray-900 rounded-lg flex items-center justify-center group-hover:bg-gray-800 transition-colors'>
+								<Zap size={18} className='text-white' />
+							</div>
+							<span className='text-xl font-bold text-gray-900 group-hover:text-gray-700 transition'>
+								StyleHub
+							</span>
 						</Link>
 
-						<div className='relative' onMouseEnter={() => setShopOpen(true)} onMouseLeave={() => setShopOpen(false)}>
-							<button className='text-slate-600 hover:text-emerald-600 font-medium transition flex items-center gap-1'>
-								Shop <ChevronDown size={16} className={`transition-transform ${shopOpen ? "rotate-180" : ""}`} />
-							</button>
-							{shopOpen && (
-								<div className='absolute top-full left-0 mt-1 w-48 bg-white border border-slate-200 rounded-xl shadow-lg py-2 z-50'>
-									{shopCategories.map((cat) => (
-										<Link
-											key={cat.to}
-											to={cat.to}
-											className='block px-4 py-2 text-sm text-slate-600 hover:bg-emerald-50 hover:text-emerald-600 transition'
+						{/* Desktop Navigation */}
+						<nav className='hidden lg:flex items-center gap-6'>
+							<Link 
+								to='/' 
+								className={`text-gray-600 hover:text-gray-900 font-medium transition-colors ${
+									location.pathname === '/' ? 'text-gray-900' : ''
+								}`}
+							>
+								Home
+							</Link>
+
+							{/* Shop Dropdown */}
+							<div 
+								className='relative'
+								onMouseEnter={() => setShopOpen(true)}
+								onMouseLeave={() => setShopOpen(false)}
+							>
+								<button 
+									className={`flex items-center gap-1 text-gray-600 hover:text-gray-900 font-medium transition-colors ${
+										shopCategories.some(cat => location.pathname === cat.to) ? 'text-gray-900' : ''
+									}`}
+								>
+									Shop 
+									<ChevronDown size={16} className={`transition-transform duration-300 ${shopOpen ? "rotate-180" : ""}`} />
+								</button>
+								
+								<AnimatePresence>
+									{shopOpen && (
+										<motion.div
+											initial={{ opacity: 0, y: -10 }}
+											animate={{ opacity: 1, y: 0 }}
+											exit={{ opacity: 0, y: -10 }}
+											transition={{ duration: 0.2 }}
+											className='absolute top-full left-0 mt-2 w-56 bg-white border border-gray-100 rounded-xl shadow-xl py-2 z-50'
 										>
-											{cat.label}
-										</Link>
-									))}
-								</div>
-							)}
-						</div>
+											{shopCategories.map((cat) => (
+												<Link
+													key={cat.to}
+													to={cat.to}
+													className='flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors'
+												>
+													<span className="text-lg">{cat.icon}</span>
+													{cat.label}
+												</Link>
+											))}
+										</motion.div>
+									)}
+								</AnimatePresence>
+							</div>
 
-						<Link to='/about' className='text-slate-600 hover:text-emerald-600 font-medium transition'>
-							About
-						</Link>
-						<Link to='/contact' className='text-slate-600 hover:text-emerald-600 font-medium transition'>
-							Contact
-						</Link>
-						<Link to='/faq' className='text-slate-600 hover:text-emerald-600 font-medium transition'>
-							FAQ
-						</Link>
+							<Link to='/about' className='text-gray-600 hover:text-gray-900 font-medium transition-colors'>About</Link>
+							<Link to='/contact' className='text-gray-600 hover:text-gray-900 font-medium transition-colors'>Contact</Link>
 
-						{user && (
-							<Link to='/cart' className='relative group text-slate-600 hover:text-emerald-600 font-medium transition flex items-center'>
-								<ShoppingCart size={20} />
-								{cart.length > 0 && (
-									<span className='absolute -top-2 -right-2 bg-emerald-500 text-white rounded-full w-4 h-4 text-xs flex items-center justify-center'>
-										{cart.length}
-									</span>
-								)}
-							</Link>
-						)}
-
-						{isAdmin && (
-							<Link
-								className='bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-md font-medium transition flex items-center shadow-sm'
-								to='/secret-dashboard'
-							>
-								<Lock size={18} className='mr-1' />
-								Dashboard
-							</Link>
-						)}
-
-						{user && (
-							<Link
-								className='bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-md font-medium transition flex items-center gap-1.5 border border-slate-200/50'
-								to='/profile'
-							>
-								<User size={18} />
-								Profile
-							</Link>
-						)}
-
-						{user ? (
-							<button
-								className='bg-slate-100 hover:bg-slate-200 text-slate-700 py-1.5 px-4 rounded-md flex items-center transition border border-slate-200/50'
-								onClick={logout}
-							>
-								<LogOut size={18} />
+							{/* Search Icon */}
+							<button className='text-gray-400 hover:text-gray-600 transition-colors'>
+								<Search size={18} />
 							</button>
-						) : (
-							<>
-								<Link
-									to='/signup'
-									className='bg-emerald-600 hover:bg-emerald-500 text-white py-2 px-4 rounded-md flex items-center transition shadow-sm'
-								>
-									<UserPlus className='mr-2' size={18} />
-									Sign Up
-								</Link>
-								<Link
-									to='/login'
-									className='bg-slate-100 hover:bg-slate-200 text-slate-700 py-2 px-4 rounded-md flex items-center transition border border-slate-200/50'
-								>
-									<LogIn className='mr-2' size={18} />
-									Login
-								</Link>
-							</>
-						)}
-					</nav>
+						</nav>
 
-					<button
-						className='lg:hidden text-slate-600 hover:text-emerald-600 p-1'
-						onClick={() => setMobileOpen(!mobileOpen)}
-						aria-label='Toggle menu'
-					>
-						{mobileOpen ? <X size={24} /> : <Menu size={24} />}
-					</button>
+						{/* Right Section */}
+						<div className='flex items-center gap-3'>
+							{/* Cart Icon */}
+							<Link to='/cart' className='relative group'>
+								<div className='p-2 rounded-lg hover:bg-gray-100 transition-colors'>
+									<ShoppingCart size={20} className='text-gray-600 group-hover:text-gray-900' />
+									{cartItemCount > 0 && (
+										<motion.span
+											initial={{ scale: 0 }}
+											animate={{ scale: 1 }}
+											className='absolute -top-1 -right-1 bg-gray-900 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center font-medium'
+										>
+											{cartItemCount}
+										</motion.span>
+									)}
+								</div>
+							</Link>
+
+							{/* Desktop Auth Buttons */}
+							<div className='hidden lg:flex items-center gap-2'>
+								{user ? (
+									<>
+										{isAdmin && (
+											<Link
+												to='/secret-dashboard'
+												className='flex items-center gap-1.5 px-3 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors text-sm font-medium'
+											>
+												<Lock size={16} />
+												Admin
+											</Link>
+										)}
+										<Link
+											to='/profile'
+											className='flex items-center gap-1.5 px-3 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors text-sm font-medium'
+										>
+											<User size={16} />
+											Profile
+										</Link>
+										<button
+											onClick={logout}
+											className='flex items-center gap-1.5 px-3 py-2 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors text-sm font-medium'
+										>
+											<LogOut size={16} />
+											Logout
+										</button>
+									</>
+								) : (
+									<>
+										<Link
+											to='/login'
+											className='px-4 py-2 rounded-lg text-gray-600 hover:text-gray-900 font-medium transition-colors text-sm'
+										>
+											Login
+										</Link>
+										<Link
+											to='/signup'
+											className='px-4 py-2 rounded-lg bg-gray-900 text-white hover:bg-gray-800 transition-colors text-sm font-medium'
+										>
+											Sign Up
+										</Link>
+									</>
+								)}
+							</div>
+
+							{/* Mobile Menu Button */}
+							<button
+								className='lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors'
+								onClick={() => setMobileOpen(!mobileOpen)}
+								aria-label='Toggle menu'
+							>
+								{mobileOpen ? <X size={20} /> : <Menu size={20} />}
+							</button>
+						</div>
+					</div>
 				</div>
 
-				{mobileOpen && (
-					<nav className='lg:hidden mt-4 pb-2 border-t border-slate-100 pt-4 space-y-1'>
-						<Link to='/' onClick={() => setMobileOpen(false)} className='block px-3 py-2 rounded-lg hover:bg-emerald-50 text-slate-700 font-medium'>Home</Link>
-						<p className='px-3 pt-2 pb-1 text-xs font-semibold uppercase tracking-wider text-slate-400'>Shop</p>
-						{shopCategories.map((cat) => (
-							<Link key={cat.to} to={cat.to} onClick={() => setMobileOpen(false)} className='block px-5 py-2 rounded-lg hover:bg-emerald-50 text-slate-600 text-sm'>
-								{cat.label}
-							</Link>
-						))}
-						<Link to='/about' onClick={() => setMobileOpen(false)} className='block px-3 py-2 rounded-lg hover:bg-emerald-50 text-slate-700 font-medium'>About</Link>
-						<Link to='/contact' onClick={() => setMobileOpen(false)} className='block px-3 py-2 rounded-lg hover:bg-emerald-50 text-slate-700 font-medium'>Contact</Link>
-						<Link to='/faq' onClick={() => setMobileOpen(false)} className='block px-3 py-2 rounded-lg hover:bg-emerald-50 text-slate-700 font-medium'>FAQ</Link>
-						{user && (
-							<Link to='/cart' onClick={() => setMobileOpen(false)} className='block px-3 py-2 rounded-lg hover:bg-emerald-50 text-slate-700 font-medium'>
-								Cart {cart.length > 0 && `(${cart.length})`}
-							</Link>
-						)}
-						{isAdmin && (
-							<Link to='/secret-dashboard' onClick={() => setMobileOpen(false)} className='block px-3 py-2 rounded-lg hover:bg-emerald-50 text-emerald-600 font-medium'>Dashboard</Link>
-						)}
-						{user && (
-							<Link to='/profile' onClick={() => setMobileOpen(false)} className='block px-3 py-2 rounded-lg hover:bg-emerald-50 text-slate-700 font-medium'>Profile</Link>
-						)}
-						<div className='flex gap-2 px-3 pt-3'>
-							{user ? (
-								<button onClick={() => { logout(); setMobileOpen(false); }} className='flex-1 bg-slate-100 text-slate-700 py-2 rounded-lg font-medium'>Log Out</button>
-							) : (
-								<>
-									<Link to='/signup' onClick={() => setMobileOpen(false)} className='flex-1 bg-emerald-600 text-white py-2 rounded-lg font-medium text-center'>Sign Up</Link>
-									<Link to='/login' onClick={() => setMobileOpen(false)} className='flex-1 bg-slate-100 text-slate-700 py-2 rounded-lg font-medium text-center'>Login</Link>
-								</>
-							)}
-						</div>
-					</nav>
-				)}
-			</div>
-		</header>
+				{/* Mobile Menu */}
+				<AnimatePresence>
+					{mobileOpen && (
+						<motion.nav
+							initial={{ opacity: 0, height: 0 }}
+							animate={{ opacity: 1, height: "auto" }}
+							exit={{ opacity: 0, height: 0 }}
+							transition={{ duration: 0.3 }}
+							className='lg:hidden border-t border-gray-100 bg-white overflow-hidden'
+						>
+							<div className='container mx-auto px-4 py-4 space-y-2'>
+								<Link to='/' className='block px-3 py-2 rounded-lg hover:bg-gray-50 text-gray-700 font-medium'>Home</Link>
+								
+								{/* Mobile Shop Section */}
+								<div className='px-3 pt-2'>
+									<p className='text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2'>Shop</p>
+									<div className='space-y-1'>
+										{shopCategories.map((cat) => (
+											<Link 
+												key={cat.to} 
+												to={cat.to} 
+												className='flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-50 text-gray-600 text-sm'
+											>
+												<span className="text-lg">{cat.icon}</span>
+												{cat.label}
+											</Link>
+										))}
+									</div>
+								</div>
+
+								<Link to='/about' className='block px-3 py-2 rounded-lg hover:bg-gray-50 text-gray-700 font-medium'>About</Link>
+								<Link to='/contact' className='block px-3 py-2 rounded-lg hover:bg-gray-50 text-gray-700 font-medium'>Contact</Link>
+								
+								{user && (
+									<>
+										{isAdmin && (
+											<Link to='/secret-dashboard' className='block px-3 py-2 rounded-lg hover:bg-gray-50 text-gray-700 font-medium'>Dashboard</Link>
+										)}
+										<Link to='/profile' className='block px-3 py-2 rounded-lg hover:bg-gray-50 text-gray-700 font-medium'>Profile</Link>
+									</>
+								)}
+
+								<div className='pt-4 border-t border-gray-100 flex gap-3'>
+									{user ? (
+										<button 
+											onClick={logout} 
+											className='flex-1 bg-gray-100 text-gray-700 py-2.5 rounded-lg font-medium text-center hover:bg-gray-200 transition'
+										>
+											Log Out
+										</button>
+									) : (
+										<>
+											<Link to='/login' className='flex-1 border border-gray-200 text-gray-700 py-2.5 rounded-lg font-medium text-center hover:bg-gray-50 transition'>Login</Link>
+											<Link to='/signup' className='flex-1 bg-gray-900 text-white py-2.5 rounded-lg font-medium text-center hover:bg-gray-800 transition'>Sign Up</Link>
+										</>
+									)}
+								</div>
+							</div>
+						</motion.nav>
+					)}
+				</AnimatePresence>
+			</header>
+
+			{/* Spacer to prevent content from hiding under navbar */}
+			<div className='h-[72px] md:h-[88px]' />
+		</>
 	);
 };
 
