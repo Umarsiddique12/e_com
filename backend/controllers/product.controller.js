@@ -45,7 +45,7 @@ export const getFeaturedProducts = async (req, res) => {
 		featuredProducts = await Product.find({ isFeatured: true }).lean();
 
 		if (!featuredProducts || featuredProducts.length === 0) {
-			return res.status(404).json({ message: "No featured products found" });
+			return res.json([]);
 		}
 
 		// store in redis for future quick access (non-blocking)

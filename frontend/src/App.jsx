@@ -10,6 +10,7 @@ import ProfilePage from "./pages/ProfilePage";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import ScrollToTop from "./components/ScrollToTop";
 import { Toaster } from "react-hot-toast";
 import { useUserStore } from "./stores/useUserStore";
 import { useEffect } from "react";
@@ -51,6 +52,7 @@ function App() {
 			</div>
 
 			<div className='relative z-50 pt-20'>
+				<ScrollToTop />
 				<Navbar />
 				<Routes>
 					<Route path='/' element={<HomePage />} />
@@ -62,6 +64,13 @@ function App() {
 						element={user?.role === "admin" ? <AdminPage /> : <Navigate to='/login' />}
 					/>
 					<Route path='/category/:category' element={<CategoryPage />} />
+					<Route path='/jeans' element={<Navigate to='/category/jeans' replace />} />
+					<Route path='/t-shirts' element={<Navigate to='/category/t-shirts' replace />} />
+					<Route path='/shoes' element={<Navigate to='/category/shoes' replace />} />
+					<Route path='/glasses' element={<Navigate to='/category/glasses' replace />} />
+					<Route path='/jackets' element={<Navigate to='/category/jackets' replace />} />
+					<Route path='/suits' element={<Navigate to='/category/suits' replace />} />
+					<Route path='/bags' element={<Navigate to='/category/bags' replace />} />
 					<Route path='/cart' element={user ? <CartPage /> : <Navigate to='/login' />} />
 					<Route path='/profile' element={user ? <ProfilePage /> : <Navigate to='/login' />} />
 					<Route

@@ -4,13 +4,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 
 const shopLinks = [
-	{ to: "/jeans", label: "Jeans" },
-	{ to: "/t-shirts", label: "T-Shirts" },
-	{ to: "/shoes", label: "Shoes" },
-	{ to: "/glasses", label: "Glasses" },
-	{ to: "/jackets", label: "Jackets" },
-	{ to: "/suits", label: "Suits" },
-	{ to: "/bags", label: "Bags" },
+	{ to: "/category/jeans", label: "Jeans" },
+	{ to: "/category/t-shirts", label: "T-Shirts" },
+	{ to: "/category/shoes", label: "Shoes" },
+	{ to: "/category/glasses", label: "Glasses" },
+	{ to: "/category/jackets", label: "Jackets" },
+	{ to: "/category/suits", label: "Suits" },
+	{ to: "/category/bags", label: "Bags" },
 ];
 
 const companyLinks = [

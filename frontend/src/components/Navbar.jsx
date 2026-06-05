@@ -6,13 +6,13 @@ import { useUserStore } from "../stores/useUserStore";
 import { useCartStore } from "../stores/useCartStore";
 
 const shopCategories = [
-	{ to: "/jeans", label: "Jeans", icon: "👖" },
-	{ to: "/t-shirts", label: "T-Shirts", icon: "👕" },
-	{ to: "/shoes", label: "Shoes", icon: "👟" },
-	{ to: "/glasses", label: "Glasses", icon: "👓" },
-	{ to: "/jackets", label: "Jackets", icon: "🧥" },
-	{ to: "/suits", label: "Suits", icon: "👔" },
-	{ to: "/bags", label: "Bags", icon: "👜" },
+	{ to: "/category/jeans", label: "Jeans", icon: "👖" },
+	{ to: "/category/t-shirts", label: "T-Shirts", icon: "👕" },
+	{ to: "/category/shoes", label: "Shoes", icon: "👟" },
+	{ to: "/category/glasses", label: "Glasses", icon: "👓" },
+	{ to: "/category/jackets", label: "Jackets", icon: "🧥" },
+	{ to: "/category/suits", label: "Suits", icon: "👔" },
+	{ to: "/category/bags", label: "Bags", icon: "👜" },
 ];
 
 const Navbar = () => {

@@ -112,7 +112,7 @@ const HomePage = () => {
 							className='flex flex-col sm:flex-row gap-4'
 						>
 							<Link
-								to='/jeans'
+									to='/category/jeans'
 								className='inline-flex items-center justify-center gap-2 bg-white text-gray-900 hover:bg-gray-100 px-8 py-3.5 rounded-lg font-semibold transition shadow-lg'
 							>
 								Explore Collection <ArrowRight size={18} />
@@ -261,7 +261,7 @@ const HomePage = () => {
 						
 						<div className='text-center mt-8'>
 							<Link
-								to='/jackets'
+									to='/category/jackets'
 								className='inline-flex items-center gap-2 text-gray-900 hover:text-gray-600 font-semibold transition'
 							>
 								View Entire Collection <ArrowRight size={18} />

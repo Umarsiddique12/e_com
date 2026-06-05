@@ -139,7 +139,7 @@ const AboutPage = () => {
 					</p>
 					<div className='flex flex-col sm:flex-row gap-4 justify-center'>
 						<Link
-							to='/jeans'
+							to='/category/jeans'
 							className='bg-white text-emerald-600 hover:bg-emerald-50 px-8 py-3 rounded-lg font-semibold transition'
 						>
 							Shop Now
